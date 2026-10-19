@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPATIA | Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5fa;
+      color: #202b45;
+    }
+    header {
+      background: #253b70;
+      color: white;
+      padding: 22px 30px;
+    }
+    header h1 { margin: 0 0 6px; }
+    header p { margin: 0; color: #dce5ff; }
+    main { padding: 25px; max-width: 1100px; margin: auto; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+    }
+    .card, .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #182b4a12;
+    }
+    .card p { color: #68758e; margin: 0 0 12px; }
+    .number { font-size: 32px; font-weight: bold; }
+    .panel { margin-top: 22px; }
+    .panel h2 { margin-top: 0; }
+    .bar-row { margin: 20px 0; }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .track { height: 12px; background: #e6eaf2; border-radius: 8px; overflow: hidden; }
+    .fill { height: 100%; border-radius: 8px; }
+    .blue { background: #4675db; width: 75%; }
+    .green { background: #25a879; width: 60%; }
+    .orange { background: #ed9b40; width: 40%; }
+    .note { color: #68758e; font-size: 14px; }
+    a { color: #315fc1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SPATIA Dashboard</h1>
+    <p>Campus Space Optimization and Management System</p>
+  </header>
+
+  <main>
+    <h2>Campus Overview</h2>
+    <section class="cards">
+      <div class="card">
+        <p>Total Campus Rooms</p>
+        <div class="number">120</div>
+      </div>
+      <div class="card">
+        <p>Available Rooms</p>
+        <div class="number">35</div>
+      </div>
+      <div class="card">
+        <p>Occupied Rooms</p>
+        <div class="number">75</div>
+      </div>
+      <div class="card">
+        <p>Maintenance Issues</p>
+        <div class="number">10</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Space Utilization</h2>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Classrooms</span><strong>75%</strong>
+        </div>
+        <div class="track"><div class="fill blue"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Laboratories</span><strong>60%</strong>
+        </div>
+        <div class="track"><div class="fill green"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Seminar Halls</span><strong>40%</strong>
+        </div>
+        <div class="track"><div class="fill orange"></div></div>
+      </div>
+
+      <p class="note">
+        Demo values only. Real campus data can be connected later.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Maintenance Summary</h2>
+      <p>Reported issues: <strong>10</strong></p>
+      <p>Resolved issues: <strong>6</strong></p>
+      <p>Pending issues: <strong>4</strong></p>
+      <p class="note">These are sample values for the prototype.</p>
+      <a href="maintenance.html">Open Maintenance Page →</a>
+    </section>
+  </main>
+</body>
+</html>
