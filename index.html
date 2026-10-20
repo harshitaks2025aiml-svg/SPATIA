@@ -1,201 +1,109 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#17132b">
-  <title>SPATIA | REC Campus Space Discovery</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>SPATIA | Smart Space Finder</title>
 
-  <link rel="stylesheet" href="./style.css">
-  <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <header class="navbar">
-    <a href="#" class="brand">
-      <img src="./images/logo.png" alt="REC Logo" class="logo"
-           onerror="this.style.display='none'">
-      <div>
-        <strong>SPATIA<span>.</span></strong>
-        <small>RAJALAKSHMI ENGINEERING COLLEGE</small>
-      </div>
-    </a>
-    <span class="demo-badge"><i></i> CAMPUS DISCOVERY</span>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-shade"></div>
-
-      <div class="hero-content">
-        <p class="eyebrow">A NEW WAY TO EXPLORE YOUR CAMPUS</p>
-
-        <h1>Find your<br><span>space.</span></h1>
-
-        <p class="hero-text">
-          Your next favourite place to learn, create and collaborate
-          is waiting. Discover campus spaces that fit your schedule.
-        </p>
-
-        <a class="hero-button" href="#finder">
-          Find your space <span>↗</span>
-        </a>
-
-        <p class="hero-caption">
-          Thoughtfully designed for the REC campus community.
-        </p>
-      </div>
-
-      <div class="campus-label">
-        <span class="pin">⌖</span>
-        <div>
-          <strong>Rajalakshmi Engineering College</strong>
-          <small>Thandalam, Chennai</small>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div>
-        <strong>06</strong>
-        <span>Campus blocks</span>
-      </div>
-      <div>
-        <strong>08 AM – 05 PM</strong>
-        <span>Campus hours</span>
-      </div>
-      <div>
-        <strong>01</strong>
-        <span>Simple space finder</span>
-      </div>
-      <div>
-        <strong>REC</strong>
-        <span>Our campus, connected</span>
-      </div>
-    </section>
-
-    <section class="section" id="finder">
-      <div class="section-heading">
-        <p class="eyebrow purple">SPACE FINDER / 01</p>
-        <h2>Your space, your schedule.</h2>
-        <p>Choose your preferred date and time to explore classrooms.</p>
-      </div>
-
-      <form id="searchForm" class="search-panel">
-        <div class="field">
-          <label for="searchDate">SELECT DATE</label>
-          <input id="searchDate" type="date" required>
+    <header class="navbar">
+        <div class="logo">
+            <span>✦</span> SPATIA
         </div>
 
-        <div class="field">
-          <label for="startTime">START TIME</label>
-          <input id="startTime" type="time" value="10:00" required>
+        <div class="nav-text">
+            Smart Campus Space Management
         </div>
+    </header>
 
-        <div class="field">
-          <label for="endTime">END TIME</label>
-          <input id="endTime" type="time" value="11:00" required>
-        </div>
 
-        <div class="field">
-          <label for="blockFilter">CAMPUS BLOCK</label>
-          <select id="blockFilter">
-            <option value="Any">All blocks</option>
-            <option value="A">A Block</option>
-            <option value="B">B Block</option>
-            <option value="C">C Block</option>
-            <option value="D">D Block</option>
-            <option value="J">J Block</option>
-            <option value="ANEW">ANEW Block</option>
-          </select>
-        </div>
+    <main>
 
-        <button class="search-button" type="submit">
-          Find Spaces <span>→</span>
-        </button>
-      </form>
+        <section class="hero">
+            <p class="tag">SMART CAMPUS</p>
 
-      <p class="info-note">
-        ⓘ Student project demonstration. Actual room availability
-        must be confirmed with the college.
-      </p>
-    </section>
+            <h1>Find Your Perfect<br>
+                <span>Campus Space</span>
+            </h1>
 
-    <section class="section results-section" id="results">
-      <div class="results-heading">
-        <div>
-          <p class="eyebrow purple">YOUR DISCOVERIES / 02</p>
-          <h2 id="resultsTitle">Explore campus rooms</h2>
-          <p id="resultsSubtitle">Select your preferred time to search.</p>
-        </div>
+            <p class="subtitle">
+                Check classroom and laboratory availability
+                instantly based on date and time.
+            </p>
+        </section>
 
-        <span class="result-count" id="roomCount">0 rooms</span>
-      </div>
 
-      <div class="legend">
-        <span><i class="dot free"></i> No timetable conflict</span>
-        <span><i class="dot busy"></i> Occupied</span>
-        <span><i class="dot unknown"></i> Schedule unknown</span>
-      </div>
+        <section class="search-card">
 
-      <div class="room-grid" id="roomsGrid">
-        <div class="empty-state">
-          <span>⌕</span>
-          <h3>Your next study spot starts here.</h3>
-          <p>Choose a date and time to discover campus rooms.</p>
-        </div>
-      </div>
-    </section>
+            <h2>Find Available Space</h2>
 
-    <section class="section directory">
-      <p class="eyebrow purple">CAMPUS DIRECTORY / 03</p>
-      <h2>Every block, one campus.</h2>
-      <p class="directory-text">
-        Explore the blocks included in this SPATIA demonstration.
-      </p>
+            <div class="form-grid">
 
-      <div class="block-grid">
-        <div class="block-card">
-          <span>A</span>
-          <div><strong>A Block</strong><small>Classroom spaces</small></div>
-        </div>
-        <div class="block-card">
-          <span>B</span>
-          <div><strong>B Block</strong><small>Classroom spaces</small></div>
-        </div>
-        <div class="block-card">
-          <span>C</span>
-          <div><strong>C Block</strong><small>Classroom spaces</small></div>
-        </div>
-        <div class="block-card">
-          <span>D</span>
-          <div><strong>D Block</strong><small>Classroom spaces</small></div>
-        </div>
-        <div class="block-card">
-          <span>J</span>
-          <div><strong>J Block</strong><small>Classroom spaces</small></div>
-        </div>
-        <div class="block-card">
-          <span>AN</span>
-          <div>
-            <strong>ANEW Block</strong>
-            <small>AC classrooms · sample capacity</small>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+                <div class="input-box">
+                    <label>📅 Date</label>
+                    <input type="date" id="date">
+                </div>
 
-  <footer class="footer">
-    <a href="#" class="footer-brand">SPATIA<span>.</span></a>
-    <p>Campus Space Discovery · Student Project Demo</p>
-    <span>REC · Chennai</span>
-  </footer>
+                <div class="input-box">
+                    <label>🕐 From</label>
+                    <input type="time" id="startTime">
+                </div>
+
+                <div class="input-box">
+                    <label>🕐 To</label>
+                    <input type="time" id="endTime">
+                </div>
+
+            </div>
+
+
+            <div class="space-selection">
+
+                <p>Select Space Type</p>
+
+                <div class="type-buttons">
+
+                    <button
+                        id="classroomBtn"
+                        onclick="selectType('Classroom')">
+                        🏫 Classroom
+                    </button>
+
+                    <button
+                        id="labBtn"
+                        onclick="selectType('Lab')">
+                        🧪 Laboratory
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button class="search-btn" onclick="searchSpaces()">
+                FIND AVAILABLE SPACES
+                <span>→</span>
+            </button>
+
+        </section>
+
+
+        <section id="results"></section>
+
+    </main>
+
+
+    <footer>
+        <p>SPATIA © 2026 | Smart Campus Space Optimization</p>
+    </footer>
+
+
+    <script src="script.js"></script>
 
 </body>
 </html>
