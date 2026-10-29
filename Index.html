@@ -1,0 +1,840 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SPATIA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky header with college identity + role switch, scrolling nav, one page per module, photo as fixed backdrop under a theme veil */
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --surface-2:#F3F5F8; --fg:#13202B; --muted:#586878; --line:#D3DAE1;
+  --accent:#2447B8; --accent-fg:#FFFFFF; --accent-soft:#E1E8FA;
+  --free:#17724F; --free-soft:#DAF0E6; --warn:#8A5B00; --warn-soft:#FBEBC8; --bad:#B3261E; --bad-soft:#F9DEDB;
+  --veil:rgba(237,240,243,.9); --shadow:0 1px 2px rgba(19,32,43,.06),0 8px 24px rgba(19,32,43,.06);
+  --f-display:'Bricolage Grotesque',system-ui,sans-serif; --f-body:'IBM Plex Sans',system-ui,sans-serif; --f-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C141B; --surface:#141F29; --surface-2:#1A2733; --fg:#E6ECF2; --muted:#93A3B3; --line:#2A3947;
+    --accent:#8DA6FF; --accent-fg:#0C141B; --accent-soft:#1E2A52;
+    --free:#5FD3A1; --free-soft:#12392B; --warn:#F0C25E; --warn-soft:#3D2F0A; --bad:#FF8A80; --bad-soft:#451A17;
+    --veil:rgba(12,20,27,.9); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C141B; --surface:#141F29; --surface-2:#1A2733; --fg:#E6ECF2; --muted:#93A3B3; --line:#2A3947;
+  --accent:#8DA6FF; --accent-fg:#0C141B; --accent-soft:#1E2A52;
+  --free:#5FD3A1; --free-soft:#12392B; --warn:#F0C25E; --warn-soft:#3D2F0A; --bad:#FF8A80; --bad-soft:#451A17;
+  --veil:rgba(12,20,27,.9); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);min-height:100vh;position:relative}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.bgphoto{position:fixed;inset:0;z-index:0;background:var(--photo,none) center/cover no-repeat}
+.bgphoto::after{content:"";position:absolute;inset:0;background:var(--veil)}
+header.top,main,footer.foot{position:relative;z-index:1}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0}
+.logo{width:42px;height:42px;flex:none;display:grid;place-items:center}
+.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.brand-t{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.brand-t b{font-family:var(--f-display);font-weight:700;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand-t small{color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.role{display:flex;flex:none;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--surface-2)}
+.role button{border:0;background:transparent;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.role button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;text-decoration:none;padding:10px 13px;font-size:14px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent}
+.nav a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+main{padding-block:20px 56px}
+.pagehead{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.pagehead h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:700}
+.pagehead p{color:var(--muted);max-width:68ch}
+.tagline{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+.hero{position:relative;overflow:hidden;border-radius:20px;color:#fff;
+  background:linear-gradient(180deg,rgba(8,16,26,.45),rgba(8,16,26,.88)),var(--photo,linear-gradient(160deg,#1a3a5e,#0d1824));background-size:cover;background-position:center;
+  padding:clamp(24px,5vw,48px) clamp(16px,4vw,40px) 18px;margin-bottom:22px}
+.hero-art{position:absolute;left:0;right:0;bottom:0;width:100%;height:55%;opacity:.14;pointer-events:none}
+.has-photo .hero-art{display:none}
+.hero-in{position:relative;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.hero h1{font-size:clamp(3.2rem,13vw,6.2rem);font-weight:800;letter-spacing:-.035em;line-height:.95}
+.lead{max-width:56ch;font-size:clamp(15px,2.4vw,18px);opacity:.92}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;align-items:end;padding:14px;margin-top:6px;color:var(--fg)}
+.brandbar{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:4px}
+.link{background:none;border:0;padding:4px 0;cursor:pointer;color:#fff;opacity:.85;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.link:hover{opacity:1}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.stack{display:flex;flex-direction:column;gap:14px}
+.sec-title{font-size:1.15rem;font-weight:700;margin:26px 0 12px}
+.sub{color:var(--muted);font-size:14px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;padding:10px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-fg);cursor:pointer;text-decoration:none;min-height:42px}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:6px 12px;font-size:13px;min-height:34px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:.03em}
+input,select,textarea{font:inherit;width:100%;min-height:42px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+textarea{min-height:84px;resize:vertical}
+input[type="checkbox"]{width:auto;min-height:0}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--fg);font-weight:500;letter-spacing:0}
+
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill.free{background:var(--free-soft);color:var(--free)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.mute{background:var(--surface-2);color:var(--muted)}
+.pill.info{background:var(--accent-soft);color:var(--accent)}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.code{font-family:var(--f-mono);font-weight:500;font-size:18px}
+.mono{font-family:var(--f-mono)}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;background:var(--surface)}
+
+/* spaces */
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.blk{display:flex;flex-direction:column;gap:2px;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.blk span{font-size:13px;color:var(--muted)}
+.blk.on{border-color:var(--accent);background:var(--accent-soft)}
+.blkwrap{position:relative}
+.blkwrap .x{position:absolute;top:6px;right:6px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 6px;border-radius:6px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;padding:14px;align-items:end;margin-bottom:16px}
+.sp{padding:14px;display:flex;flex-direction:column;gap:8px}
+.sp header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sp .meta{color:var(--muted);font-size:13px}
+.sp .cap b{font-family:var(--f-display);font-size:22px}
+.sp .fac{display:flex;flex-wrap:wrap;gap:5px}
+.sp footer{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin-bottom:12px}
+
+/* timetable */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table.tt{border-collapse:collapse;width:100%;min-width:700px}
+table.tt th,table.tt td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;vertical-align:top}
+table.tt th:last-child,table.tt td:last-child{border-right:0}
+table.tt tr:last-child th,table.tt tr:last-child td{border-bottom:0}
+table.tt thead th{padding:10px;font-size:13px;background:var(--surface-2);text-align:left}
+table.tt tbody th{padding:8px 10px;text-align:left;font-size:13px;white-space:nowrap;background:var(--surface-2);width:92px}
+table.tt tbody th small{display:block;font-family:var(--f-mono);font-weight:400;color:var(--muted);font-size:11px}
+.cell{display:block;width:100%;min-height:56px;padding:8px 10px;border:0;background:transparent;text-align:left;font-size:12.5px;line-height:1.35;color:var(--muted)}
+button.cell{cursor:pointer}
+.cell.on{background:var(--accent-soft);color:var(--fg)}
+.cell.sel{outline:2px solid var(--accent);outline-offset:-2px}
+.windows{display:grid;gap:8px}
+.win{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px}
+.win b{min-width:44px}
+.slot{font-family:var(--f-mono);font-size:12.5px;padding:2px 8px;border-radius:6px;background:var(--free-soft);color:var(--free)}
+
+/* find + results */
+.res{display:flex;flex-direction:column;gap:8px;padding:14px}
+.res header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.res .row{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:13px}
+.res footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+details.na{margin-top:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+details.na summary{padding:12px 14px;cursor:pointer;font-weight:600}
+details.na ul{list-style:none;margin:0;padding:0 14px 8px}
+details.na li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+details.na li span{color:var(--muted)}
+
+/* requests and issues */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border:1px solid var(--line);background:var(--surface);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.item{padding:14px;display:flex;flex-direction:column;gap:8px}
+.item header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.item .row{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:13px}
+.item .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.steps{display:flex;list-style:none;margin:2px 0 0;padding:0;gap:6px}
+.steps li{flex:1;font-size:12px;color:var(--muted);padding-top:8px;border-top:3px solid var(--line)}
+.steps li.done{border-top-color:var(--free);color:var(--fg)}
+.steps li.cur{border-top-color:var(--accent);color:var(--fg);font-weight:600}
+.two{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;align-items:start}
+.form{display:flex;flex-direction:column;gap:12px}
+.form h2{font-size:1.25rem}
+.form .pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.err{color:var(--bad);font-size:13px;min-height:1.2em}
+.formcard{padding:16px}
+
+/* dashboard */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{padding:14px;display:flex;flex-direction:column;gap:2px;text-decoration:none}
+.kpi b{font-family:var(--f-display);font-size:2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted)}
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.panel{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel h3{font-size:1rem}
+.bar{display:grid;grid-template-columns:minmax(70px,120px) 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.bt{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.bt i{display:block;height:100%;background:var(--accent);border-radius:6px 0 0 6px}
+.bv{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+.heat{display:grid;grid-template-columns:44px repeat(5,minmax(0,1fr));gap:3px;font-size:12px}
+.heat div{padding:8px 2px;text-align:center;border-radius:5px;font-variant-numeric:tabular-nums}
+.heat .h{color:var(--muted);font-weight:600;padding:4px 0;background:none}
+.heat .p{color:var(--muted);font-family:var(--f-mono);background:none;text-align:left;padding-left:0}
+table.plain{width:100%;border-collapse:collapse;font-size:14px}
+table.plain th,table.plain td{text-align:left;padding:8px 6px;border-top:1px solid var(--line)}
+table.plain th{font-size:12px;color:var(--muted);border-top:0}
+table.plain td:last-child,table.plain th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+
+/* home */
+.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mod{padding:18px;display:flex;flex-direction:column;gap:8px;text-decoration:none}
+.mod h3{font-size:1.1rem}
+.mod p{color:var(--muted);font-size:14px}
+.mod .go{margin-top:auto;font-weight:600;color:var(--accent);font-size:14px;padding-top:6px}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(6,12,18,.6);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);color:var(--fg);width:min(580px,100%);max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:20px max(16px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+@media(min-width:640px){.modal{align-items:center}.sheet{border-radius:18px;padding:24px}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:12px 0}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+footer.foot{padding-block:0 40px;color:var(--muted);font-size:13px}
+@media(max-width:720px){.two{grid-template-columns:minmax(0,1fr)}.brand-t b{font-size:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="bgphoto" id="bg" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-in">
+      <a class="brand" href="#home" aria-label="SPATIA home">
+        <span class="logo" id="logo"></span>
+        <span class="brand-t"><b>Rajalakshmi Engineering College</b><small>Chennai · SPATIA</small></span>
+      </a>
+      <div class="role" role="group" aria-label="View as">
+        <button type="button" data-role="student" aria-pressed="false">Student</button>
+        <button type="button" data-role="admin" aria-pressed="true">Admin</button>
+      </div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="view" tabindex="-1"></main>
+
+<footer class="foot wrap">
+  <p>Sample campus data for demonstration. Spaces, requests and issues you add are kept in this browser only. Class period timings are sample values.</p>
+</footer>
+
+<input type="file" id="photoIn" accept="image/*" hidden>
+<input type="file" id="logoIn" accept="image/*" hidden>
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var store={
+  get:function(k,d){try{var v=localStorage.getItem('spatia.'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set:function(k,v){try{localStorage.setItem('spatia.'+k,JSON.stringify(v));return true}catch(e){return false}},
+  del:function(k){try{localStorage.removeItem('spatia.'+k)}catch(e){}}
+};
+
+/* ---------- time helpers ---------- */
+var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var PERIODS=[[525,575],[575,625],[640,690],[690,740],[790,840],[840,890],[905,955],[955,1005]];
+var DAY_START=525,DAY_END=1005;
+function fmt(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+function toMin(t){if(!t)return NaN;var p=t.split(':');return (+p[0])*60+(+p[1])}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parseISO(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function dow(s){return parseISO(s).getDay()}
+function addDays(s,n){var d=parseISO(s);d.setDate(d.getDate()+n);return iso(d)}
+function nextWorking(s){var x=s;while(dow(x)===0||dow(x)===6)x=addDays(x,1);return x}
+function pretty(s){var d=parseISO(s);return DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()]}
+function todayISO(){return iso(new Date())}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- seed data ---------- */
+var TYPES=['Classroom','Lab','Seminar Hall','Study Space'];
+var FAC={'Classroom':['Projector','Whiteboard','Wi-Fi'],'Lab':['Workstations','Wi-Fi','AC'],'Seminar Hall':['Projector','Mic & PA','AC','Wi-Fi'],'Study Space':['Wi-Fi','Charging points','Quiet zone']};
+var CATS=['Furniture','Projector / AV','Electrical','Air conditioning','Network / Wi-Fi','Cleaning','Other'];
+var GROUPS=['CSE-II A','CSE-II B','AIML-I A','AIML-III','IT-II','ECE-II A','ECE-III','MECH-II','EEE-III','CSBS-I'];
+var COURSES=['Data Structures','Engineering Mathematics','Database Systems','Operating Systems','Physics','Chemistry','Machine Learning','Computer Networks','Python Programming','Digital Logic','OOP with Java','Software Engineering','Technical English'];
+
+function seedSpaces(){
+  var r=rng(11),id=0,out=[];
+  function add(b,floor,num,type,cap,extra){id++;out.push({id:'s'+id,code:b+'-'+num,building:b,floor:floor,type:type,capacity:cap,facilities:FAC[type].concat(extra||[]),active:true})}
+  var f,n;
+  for(f=1;f<=4;f++)for(n=1;n<=4;n++)add('A',f,f*100+n,'Classroom',[60,60,66,72][n-1],r()>.5?['AC']:[]);
+  add('A',1,'SH1','Seminar Hall',150);
+  for(f=1;f<=3;f++){add('B',f,f*100+1,'Classroom',66,r()>.5?['AC']:[]);add('B',f,f*100+2,'Classroom',60);add('B',f,f*100+3,'Lab',40);add('B',f,f*100+4,'Lab',36)}
+  add('B',4,401,'Lab',40);add('B',4,402,'Lab',40);
+  for(f=1;f<=3;f++){add('C',f,f*100+1,'Lab',30);add('C',f,f*100+2,'Lab',30);add('C',f,f*100+3,'Classroom',54)}
+  add('L',2,'SH1','Seminar Hall',200);add('L',3,'SR1','Seminar Hall',80);
+  add('L',1,'ST1','Study Space',24);add('L',2,'ST2','Study Space',16);add('L',3,'ST3','Study Space',12);add('L',3,'ST4','Study Space',30);
+  return out;
+}
+function seedTT(list){
+  var r=rng(77),tt={};
+  list.forEach(function(s){
+    if(s.type==='Study Space')return;
+    var p={'Classroom':.64,'Lab':.5,'Seminar Hall':.18}[s.type];
+    for(var d=1;d<=5;d++)for(var k=1;k<=8;k++){
+      if(r()<p)tt[s.id+'|'+d+'|'+k]=GROUPS[Math.floor(r()*GROUPS.length)]+' · '+COURSES[Math.floor(r()*COURSES.length)];
+    }
+  });
+  return tt;
+}
+var seedSp=seedSpaces();
+var ttBase=seedTT(seedSp);
+var spaces=store.get('spaces',null)||seedSp;
+var blocks=store.get('blocks',null)||[
+  {id:'A',name:'Block A',note:'Main academic block',floors:4},
+  {id:'B',name:'Block B',note:'Computing block',floors:4},
+  {id:'C',name:'Block C',note:'Science and labs',floors:3},
+  {id:'L',name:'Library Block',note:'Library and seminar block',floors:3}
+];
+var ttOver=store.get('tt',{});
+var issues=store.get('issues',null);
+var bookings=store.get('bookings',null);
+var profile=store.get('profile',{name:'',roll:''});
+var role=store.get('role','admin');
+
+function sv(){store.set('spaces',spaces);store.set('blocks',blocks);store.set('tt',ttOver);store.set('issues',issues);store.set('bookings',bookings)}
+
+/* ---------- core logic ---------- */
+function classAt(id,d,k){var key=id+'|'+d+'|'+k;if(Object.prototype.hasOwnProperty.call(ttOver,key))return ttOver[key];return ttBase[key]||null}
+function blockedByMaint(sp){return issues.find(function(i){return i.spaceId===sp.id&&i.sev==='High'&&i.status!=='Resolved'})}
+function busy(sp,date,ignoreId){
+  var out=[],d=dow(date);
+  if(d>=1&&d<=5)PERIODS.forEach(function(p,i){var c=classAt(sp.id,d,i+1);if(c)out.push({s:p[0],e:p[1],kind:'class',label:c})});
+  bookings.forEach(function(b){
+    if(b.spaceId===sp.id&&b.date===date&&b.id!==ignoreId&&(b.status==='Pending'||b.status==='Approved'))
+      out.push({s:toMin(b.from),e:toMin(b.to),kind:b.status==='Approved'?'booked':'pending',label:b.purpose});
+  });
+  return out.sort(function(a,b){return a.s-b.s});
+}
+/* overlap rule: two intervals clash when each starts before the other ends */
+function check(sp,date,s,e,ignoreId){
+  if(!sp.active)return {ok:false,reason:'Not in service'};
+  if(blockedByMaint(sp))return {ok:false,reason:'Under maintenance'};
+  var c=busy(sp,date,ignoreId).find(function(x){return x.s<e&&s<x.e});
+  if(c)return {ok:false,reason:(c.kind==='class'?'Class: ':c.kind==='booked'?'Booked: ':'Pending request: ')+c.label+' ('+fmt(c.s)+'–'+fmt(c.e)+')'};
+  return {ok:true};
+}
+function gapsFrom(bs){
+  var cur=DAY_START,g=[];
+  bs.slice().sort(function(a,b){return a.s-b.s}).forEach(function(b){if(b.s>cur)g.push([cur,b.s]);cur=Math.max(cur,b.e)});
+  if(cur<DAY_END)g.push([cur,DAY_END]);
+  return g.filter(function(x){return x[1]-x[0]>=20});
+}
+function freeGaps(sp,date){return gapsFrom(busy(sp,date))}
+function classGaps(sp,d){
+  var bs=[];PERIODS.forEach(function(p,i){if(classAt(sp.id,d,i+1))bs.push({s:p[0],e:p[1]})});return gapsFrom(bs);
+}
+function refSlot(){
+  var now=new Date(),date=iso(now),m=now.getHours()*60+now.getMinutes();
+  if(dow(date)===0||dow(date)===6)return {date:nextWorking(date),k:1,live:false};
+  var idx=-1;for(var i=0;i<PERIODS.length;i++){if(m<PERIODS[i][1]){idx=i;break}}
+  if(idx===-1)return {date:nextWorking(addDays(date,1)),k:1,live:false};
+  return {date:date,k:idx+1,live:m>=PERIODS[idx][0]};
+}
+function weekDates(){var t=todayISO(),d=dow(t),mon=addDays(t,d===0?-6:1-d);return [0,1,2,3,4].map(function(i){return addDays(mon,i)})}
+function occ(sp,date){
+  var set={};
+  busy(sp,date).forEach(function(b){if(b.kind==='pending')return;PERIODS.forEach(function(p,i){if(b.s<p[1]&&p[0]<b.e)set[i+1]=1})});
+  return set;
+}
+function util(sp){var n=0;weekDates().forEach(function(d){n+=Object.keys(occ(sp,d)).length});return n/40}
+function teaching(){return spaces.filter(function(s){return s.active&&s.type!=='Study Space'})}
+function sortedSpaces(){
+  var order=blocks.map(function(b){return b.id});
+  return spaces.slice().sort(function(a,b){var x=order.indexOf(a.building)-order.indexOf(b.building);if(x)return x;if(a.floor!==b.floor)return a.floor-b.floor;return String(a.code).localeCompare(String(b.code),undefined,{numeric:true})});
+}
+function blockName(id){var b=blocks.find(function(x){return x.id===id});return b?b.name:id}
+function spaceById(id){return spaces.find(function(s){return s.id===id})}
+function firstFreePeriod(sp,date,from){
+  for(var j=0;j<8;j++){var k=((from-1+j)%8)+1;if(check(sp,date,PERIODS[k-1][0],PERIODS[k-1][1]).ok)return k}
+  return null;
+}
+
+/* seed requests and issues (relative to today) */
+if(!issues){
+  issues=[];
+  var d0=todayISO();
+  [['B-102','Projector / AV','Medium','Projector flickers after about 20 minutes of use.','In progress',-3],
+   ['A-203','Furniture','Low','Three broken chairs in the last row.','Reported',-1],
+   ['C-302','Electrical','High','Ceiling fan and two wall sockets are not working.','Reported',0],
+   ['L-ST1','Network / Wi-Fi','Low','Wi-Fi drops every few minutes near the window desks.','Resolved',-6]
+  ].forEach(function(x,i){var sp=seedSp.find(function(s){return s.code===x[0]});if(sp)issues.push({id:'i'+(i+1),spaceId:sp.id,cat:x[1],sev:x[2],desc:x[3],status:x[4],reported:addDays(d0,x[5]),by:'Faculty'})});
+}
+if(!bookings){
+  bookings=[];
+  var base=nextWorking(todayISO());
+  [['A-SH1',0,6,'Pending','Placement orientation talk',140],['B-103',0,3,'Approved','Project review session',34],['L-ST2',1,2,'Approved','Group study before internals',10],['A-201',1,7,'Rejected','Extra class during exam prep week',55]].forEach(function(x,i){
+    var sp=spaces.find(function(s){return s.code===x[0]});if(!sp)return;
+    var date=x[1]?nextWorking(addDays(base,x[1])):base;
+    var k=firstFreePeriod(sp,date,x[2]);if(!k)return;
+    bookings.push({id:'b'+(i+1),spaceId:sp.id,date:date,from:fmt(PERIODS[k-1][0]),to:fmt(PERIODS[k-1][1]),purpose:x[4],by:'Sample student',roll:'',attendees:x[5],status:x[3],created:new Date(Date.now()-(i+1)*5*3600e3).toISOString()});
+  });
+}
+
+/* ---------- state ---------- */
+var rs0=refSlot();
+var st={
+  sp:{q:'',block:'',type:''},
+  find:{date:rs0.date,from:fmt(PERIODS[rs0.k-1][0]),to:fmt(PERIODS[rs0.k-1][1]),block:'',type:'',size:''},
+  rq:{tab:'All'},
+  mt:{show:'Open'},
+  tt:{space:null,sel:null}
+};
+var isAdmin=function(){return role==='admin'};
+
+/* ---------- UI helpers ---------- */
+var toastTimer=null;
+function toast(msg){var t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true},3000)}
+var lastFocus=null;
+function openModal(html){lastFocus=document.activeElement;$('#sheet').innerHTML=html;$('#modal').hidden=false;var f=$('#sheet input,#sheet select,#sheet textarea,#sheet button');if(f)f.focus()}
+function closeModal(){$('#modal').hidden=true;$('#sheet').innerHTML='';if(lastFocus&&lastFocus.focus)try{lastFocus.focus()}catch(e){}}
+function statusPill(s){return '<span class="pill '+({Pending:'warn',Approved:'free',Rejected:'bad',Cancelled:'mute'}[s]||'mute')+'">'+esc(s)+'</span>'}
+function fmtWhen(c){try{return new Date(c).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+function opts(list,sel,blank){return (blank?'<option value="">'+esc(blank)+'</option>':'')+list.map(function(x){var v=typeof x==='object'?x.v:x,l=typeof x==='object'?x.l:x;return '<option value="'+esc(v)+'"'+(String(v)===String(sel)?' selected':'')+'>'+esc(l)+'</option>'}).join('')}
+function spaceOptions(sel){
+  var all=sortedSpaces();
+  return blocks.map(function(b){var l=all.filter(function(s){return s.building===b.id});if(!l.length)return '';return '<optgroup label="'+esc(b.name)+'">'+l.map(function(s){return '<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+esc(s.code)+' · '+esc(s.type)+'</option>'}).join('')+'</optgroup>'}).join('');
+}
+function periodOptions(sel){return '<option value="">Custom time</option>'+PERIODS.map(function(p,i){return '<option value="'+(i+1)+'"'+(String(sel)===String(i+1)?' selected':'')+'>Period '+(i+1)+' · '+fmt(p[0])+'–'+fmt(p[1])+'</option>'}).join('')}
+function periodOf(from,to){for(var i=0;i<PERIODS.length;i++){if(fmt(PERIODS[i][0])===from&&fmt(PERIODS[i][1])===to)return i+1}return ''}
+
+/* ---------- branding ---------- */
+var MONO='<svg viewBox="0 0 40 40" width="42" height="42" aria-hidden="true"><rect width="40" height="40" rx="10" style="fill:var(--accent)"/><text x="20" y="25" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="500" font-size="13" style="fill:var(--accent-fg)">REC</text></svg>';
+function applyBrand(){
+  var photo=store.get('photo',null),logo=store.get('logo',null),root=document.documentElement;
+  if(photo){root.style.setProperty('--photo','url("'+photo+'")');root.classList.add('has-photo')}
+  else{root.style.removeProperty('--photo');root.classList.remove('has-photo')}
+  $('#logo').innerHTML=logo?'<img alt="Rajalakshmi Engineering College logo" src="'+logo+'">':MONO;
+}
+function readImage(file,max,type,cb){
+  var fr=new FileReader();
+  fr.onload=function(){var img=new Image();
+    img.onload=function(){var sc=Math.min(1,max/Math.max(img.width,img.height));var c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));c.getContext('2d').drawImage(img,0,0,c.width,c.height);cb(c.toDataURL(type,.82))};
+    img.onerror=function(){toast('That file could not be read as an image.')};img.src=fr.result};
+  fr.readAsDataURL(file);
+}
+$('#photoIn').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;readImage(f,1600,'image/jpeg',function(u){if(store.set('photo',u)){applyBrand();toast('Campus photo updated.')}else{toast('Photo is too large to keep. Try a smaller image.')}});e.target.value=''});
+$('#logoIn').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;readImage(f,300,'image/png',function(u){if(store.set('logo',u)){applyBrand();toast('College logo updated.')}else{toast('Logo is too large to keep. Try a smaller image.')}});e.target.value=''});
+
+/* ---------- views ---------- */
+var HERO_ART='<svg class="hero-art" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><defs><pattern id="win" width="22" height="26" patternUnits="userSpaceOnUse"><rect x="5" y="7" width="10" height="12" fill="#0E1A26" opacity=".6"/></pattern></defs><g fill="#fff"><rect x="20" y="120" width="290" height="120"/><rect x="20" y="120" width="290" height="120" fill="url(#win)"/><rect x="340" y="76" width="430" height="164"/><rect x="340" y="76" width="430" height="164" fill="url(#win)"/><rect x="520" y="22" width="70" height="60"/><polygon points="515,22 555,0 595,22"/><circle cx="555" cy="46" r="14" fill="#0E1A26" opacity=".6"/><rect x="800" y="104" width="380" height="136"/><rect x="800" y="104" width="380" height="136" fill="url(#win)"/></g></svg>';
+
+function renderHome(){
+  var rs=refSlot(),p=PERIODS[rs.k-1],f=st.find;
+  var free=spaces.filter(function(s){return check(s,rs.date,p[0],p[1]).ok}).length;
+  var active=spaces.filter(function(s){return s.active}).length;
+  var openIssues=issues.filter(function(i){return i.status!=='Resolved'}).length;
+  var pend=bookings.filter(function(b){return b.status==='Pending'}).length;
+  return '<section class="hero">'+HERO_ART+'<div class="hero-in">'+
+    '<p class="eyebrow">Intelligent Campus Space Optimization &amp; Management System</p>'+
+    '<h1>SPATIA</h1>'+
+    '<p class="lead">Find a free classroom, lab or seminar hall at Rajalakshmi Engineering College, request it for your time slot, and see how every space on campus is used.</p>'+
+    '<form class="quick card" id="quickForm">'+
+      '<div><label for="qDate">Date</label><input id="qDate" type="date" required value="'+esc(f.date)+'"></div>'+
+      '<div><label for="qFrom">From</label><input id="qFrom" type="time" step="300" required value="'+esc(f.from)+'"></div>'+
+      '<div><label for="qTo">To</label><input id="qTo" type="time" step="300" required value="'+esc(f.to)+'"></div>'+
+      '<div><label for="qSize">Group size</label><input id="qSize" type="number" min="1" max="500" placeholder="e.g. 45" value="'+esc(f.size)+'"></div>'+
+      '<button class="btn" type="submit">Find spaces</button>'+
+    '</form>'+
+    '<div class="brandbar"><button type="button" class="link" data-act="pick-photo">Set campus photo</button><button type="button" class="link" data-act="pick-logo">Set college logo</button><button type="button" class="link" data-act="reset-brand">Reset branding</button></div>'+
+  '</div></section>'+
+  '<div class="kpis">'+
+    '<a class="card kpi" href="#find"><b>'+free+' / '+active+'</b><span>Spaces free in Period '+rs.k+' ('+pretty(rs.date)+', '+fmt(p[0])+')</span></a>'+
+    '<a class="card kpi" href="#requests"><b>'+pend+'</b><span>Requests waiting for review</span></a>'+
+    '<a class="card kpi" href="#maintenance"><b>'+openIssues+'</b><span>Open maintenance issues</span></a>'+
+    '<a class="card kpi" href="#dashboard"><b>'+Math.round(teaching().reduce(function(a,s){return a+util(s)},0)/Math.max(1,teaching().length)*100)+'%</b><span>Average weekly use of teaching spaces</span></a>'+
+  '</div>'+
+  '<h2 class="sec-title">What is inside</h2>'+
+  '<div class="mods">'+
+    mod('spaces','Space module','Space and building management','Blocks, floors and rooms with type, capacity and facilities. Add, view, update and delete.','Open spaces')+
+    mod('timetable','Availability module','Timetable and availability','Class schedules for every room, free slots between classes, and a clash check on any requested time.','Open timetable')+
+    mod('find','Booking module','Student search and booking','Search by date, time, block, type and group size. Request a room, cancel it and track the answer.','Find a space')+
+    mod('dashboard','Maintenance module','Maintenance and dashboard','Report broken chairs or faulty projectors, follow the repair, and read utilization summaries.','Open dashboard')+
+  '</div>'+
+  '<p class="sub" style="margin-top:18px">You are viewing as <b>'+(isAdmin()?'Admin':'Student')+'</b>. '+(isAdmin()?'Admins can add and edit spaces, change timetables, review requests and update repairs.':'Students can search, request, cancel and report issues.')+' Use the switch at the top right to change.</p>';
+}
+function mod(h,tag,title,txt,go){return '<a class="card mod" href="#'+h+'"><span class="tagline">'+tag+'</span><h3>'+title+'</h3><p>'+txt+'</p><span class="go">'+go+' →</span></a>'}
+
+/* Spaces (module 1) */
+function spaceCard(s){
+  var m=blockedByMaint(s);
+  return '<article class="card sp"><header><span class="code">'+esc(s.code)+'</span><span class="pill '+(m?'bad':s.active?'free':'mute')+'">'+(m?'Under maintenance':s.active?'In service':'Not in service')+'</span></header>'+
+    '<p class="meta">'+esc(s.type)+' · '+esc(blockName(s.building))+' · Floor '+s.floor+'</p>'+
+    '<p class="cap"><b>'+s.capacity+'</b> seats</p>'+
+    '<p class="fac">'+s.facilities.map(function(x){return '<span class="tag">'+esc(x)+'</span>'}).join('')+'</p>'+
+    '<footer><button class="btn sm" data-act="detail" data-id="'+s.id+'">Details</button>'+
+    (isAdmin()?'<button class="btn sm ghost" data-act="edit-space" data-id="'+s.id+'">Edit</button><button class="btn sm ghost danger" data-act="del-space" data-id="'+s.id+'">Delete</button>':'')+'</footer></article>';
+}
+function blocksHTML(){
+  return blocks.map(function(b){
+    var n=spaces.filter(function(s){return s.building===b.id}).length;
+    return '<div class="blkwrap"><button type="button" class="blk '+(st.sp.block===b.id?'on':'')+'" data-act="filter-block" data-id="'+esc(b.id)+'" aria-pressed="'+(st.sp.block===b.id)+'"><b>'+esc(b.name)+'</b><span>'+n+' spaces · '+b.floors+' floors</span><span>'+esc(b.note||'')+'</span></button>'+
+      (isAdmin()&&n===0?'<button type="button" class="x" data-act="del-block" data-id="'+esc(b.id)+'" aria-label="Remove '+esc(b.name)+'">Remove</button>':'')+'</div>';
+  }).join('');
+}
+function spaceListHTML(){
+  var f=st.sp,q=f.q.trim().toLowerCase();
+  var l=sortedSpaces().filter(function(s){return (!f.block||s.building===f.block)&&(!f.type||s.type===f.type)&&(!q||(s.code+' '+s.type+' '+s.facilities.join(' ')).toLowerCase().indexOf(q)>-1)});
+  if(!l.length)return '<div class="empty">No spaces match these filters.</div>';
+  return '<p class="sub" style="margin-bottom:10px">'+l.length+' of '+spaces.length+' spaces</p><div class="grid">'+l.map(spaceCard).join('')+'</div>';
+}
+function renderSpaces(){
+  return '<div class="pagehead"><span class="tagline">Space module</span><h1>Spaces and blocks</h1><p>Every block, floor and room on campus with its type, capacity and facilities.</p></div>'+
+  '<div class="toolbar"><span class="sub">Select a block to filter the list.</span>'+(isAdmin()?'<span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" data-act="add-block">Add block</button><button class="btn sm" data-act="add-space">Add space</button></span>':'')+'</div>'+
+  '<div class="blocks" id="blkStrip">'+blocksHTML()+'</div>'+
+  '<div class="card filters"><div><label for="sQ">Search</label><input id="sQ" type="search" placeholder="Room code, type or facility" data-m="sp.q" data-r="spaces" value="'+esc(st.sp.q)+'"></div>'+
+  '<div><label for="sBlock">Block</label><select id="sBlock" data-m="sp.block" data-r="spaces">'+opts(blocks.map(function(b){return {v:b.id,l:b.name}}),st.sp.block,'All blocks')+'</select></div>'+
+  '<div><label for="sType">Type</label><select id="sType" data-m="sp.type" data-r="spaces">'+opts(TYPES,st.sp.type,'All types')+'</select></div></div>'+
+  '<div id="spList">'+spaceListHTML()+'</div>';
+}
+function openDetail(id){
+  var s=spaceById(id);if(!s)return;
+  var date=st.find.date,gaps=freeGaps(s,date),issuesOpen=issues.filter(function(i){return i.spaceId===id&&i.status!=='Resolved'});
+  openModal('<div class="form"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h2 class="mono">'+esc(s.code)+'</h2><button class="btn ghost sm" data-act="close-modal">Close</button></div>'+
+    '<dl class="kv"><dt>Type</dt><dd>'+esc(s.type)+'</dd><dt>Location</dt><dd>'+esc(blockName(s.building))+', floor '+s.floor+'</dd><dt>Capacity</dt><dd>'+s.capacity+' seats</dd><dt>Facilities</dt><dd>'+(s.facilities.map(esc).join(', ')||'None listed')+'</dd></dl>'+
+    '<div><label>Free windows on '+esc(pretty(date))+'</label><div style="display:flex;flex-wrap:wrap;gap:6px">'+(blockedByMaint(s)?'<span class="pill bad">Under maintenance</span>':(gaps.length?gaps.map(function(g){return '<span class="slot">'+fmt(g[0])+'–'+fmt(g[1])+'</span>'}).join(''):'<span class="sub">No free window on this day.</span>'))+'</div></div>'+
+    (issuesOpen.length?'<div><label>Open issues</label>'+issuesOpen.map(function(i){return '<p class="sub">'+esc(i.cat)+' · '+esc(i.sev)+' · '+esc(i.desc)+'</p>'}).join('')+'</div>':'')+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="request" data-id="'+s.id+'">Request this space</button><a class="btn ghost" href="#timetable" data-act="to-tt" data-id="'+s.id+'">View timetable</a></div></div>');
+}
+function spaceFormHTML(s){
+  s=s||{};var isNew=!s.id;
+  return '<form class="form" id="spaceForm" data-id="'+esc(s.id||'')+'"><h2>'+(isNew?'Add a space':'Edit '+esc(s.code))+'</h2>'+
+    '<div class="pair"><div><label for="fCode">Room code</label><input id="fCode" required maxlength="12" value="'+esc(s.code||'')+'" placeholder="A-105"></div><div><label for="fBlock">Block</label><select id="fBlock">'+opts(blocks.map(function(b){return {v:b.id,l:b.name}}),s.building||blocks[0].id)+'</select></div></div>'+
+    '<div class="pair"><div><label for="fFloor">Floor</label><input id="fFloor" type="number" min="0" max="20" required value="'+(s.floor==null?1:s.floor)+'"></div><div><label for="fCap">Capacity</label><input id="fCap" type="number" min="1" max="1000" required value="'+(s.capacity||'')+'"></div></div>'+
+    '<div><label for="fTypeSel">Type</label><select id="fTypeSel">'+opts(TYPES,s.type||'Classroom')+'</select></div>'+
+    '<div><label for="fFac">Facilities (comma separated)</label><input id="fFac" value="'+esc((s.facilities||[]).join(', '))+'" placeholder="Projector, Whiteboard, Wi-Fi"></div>'+
+    '<label class="check"><input id="fActive" type="checkbox"'+(s.active===false?'':' checked')+'> In service</label>'+
+    '<p class="err" id="formErr" role="alert"></p>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button class="btn" type="submit">'+(isNew?'Add space':'Save changes')+'</button></div></form>';
+}
+
+/* Timetable (module 2) */
+function ttHTML(){
+  var sp=spaceById(st.tt.space);if(!sp)return '<div class="empty">Add a space first.</div>';
+  var sel=st.tt.sel,rows='';
+  for(var k=1;k<=8;k++){
+    rows+='<tr><th scope="row">P'+k+'<small>'+fmt(PERIODS[k-1][0])+'–'+fmt(PERIODS[k-1][1])+'</small></th>';
+    for(var d=1;d<=5;d++){
+      var c=classAt(sp.id,d,k),on=sel&&sel.d===d&&sel.k===k;
+      var inner=c?esc(c):'Free';
+      rows+='<td>'+(isAdmin()&&sp.type!=='Study Space'?'<button type="button" class="cell '+(c?'on':'')+(on?' sel':'')+'" data-act="tt-cell" data-d="'+d+'" data-k="'+k+'" aria-label="'+DAYS[d]+' period '+k+': '+(c?esc(c):'free')+'">'+inner+'</button>':'<div class="cell '+(c?'on':'')+'">'+inner+'</div>')+'</td>';
+    }
+    rows+='</tr>';
+  }
+  var editor='';
+  if(sel){
+    var cur=classAt(sp.id,sel.d,sel.k)||'';
+    editor='<form class="card formcard form" id="ttForm" style="margin-top:12px"><label for="ttText">'+DAYS[sel.d]+' · Period '+sel.k+' · '+fmt(PERIODS[sel.k-1][0])+'–'+fmt(PERIODS[sel.k-1][1])+'</label><input id="ttText" maxlength="60" placeholder="Class or group, for example CSE-II A · Data Structures" value="'+esc(cur)+'"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" type="submit">Save class</button><button type="button" class="btn sm ghost" data-act="tt-clear">Clear this period</button><button type="button" class="btn sm ghost" data-act="tt-close">Done</button></div></form>';
+  }
+  var wins='';
+  for(var dd=1;dd<=5;dd++){
+    var g=sp.type==='Study Space'?[[DAY_START,DAY_END]]:classGaps(sp,dd);
+    wins+='<div class="card win"><b>'+DAYS[dd]+'</b>'+(g.length?(g.length===1&&g[0][0]===DAY_START&&g[0][1]===DAY_END?'<span class="slot">Free all day</span>':g.map(function(x){return '<span class="slot">'+fmt(x[0])+'–'+fmt(x[1])+'</span>'}).join('')):'<span class="sub">No free time</span>')+'</div>';
+  }
+  return '<div class="scroll"><table class="tt"><thead><tr><th>Period</th>'+[1,2,3,4,5].map(function(d){return '<th>'+DAYS[d]+'</th>'}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    (isAdmin()?(sp.type==='Study Space'?'<p class="sub" style="margin-top:10px">Study spaces are open all day and have no class timetable.</p>':'<p class="sub" style="margin-top:10px">Select a cell to add, change or clear a class.</p>'):'')+editor+
+    '<h2 class="sec-title">Free windows between classes</h2><div class="windows">'+wins+'</div>';
+}
+function renderTimetable(){
+  if(!st.tt.space||!spaceById(st.tt.space))st.tt.space=(sortedSpaces().find(function(s){return s.type!=='Study Space'})||spaces[0]||{}).id;
+  return '<div class="pagehead"><span class="tagline">Availability module</span><h1>Timetable</h1><p>The weekly class schedule of one room, and the free windows left between classes.</p></div>'+
+    '<div class="card filters" style="grid-template-columns:minmax(0,320px)"><div><label for="ttSpace">Space</label><select id="ttSpace" data-m="tt.space" data-r="tt">'+spaceOptions(st.tt.space)+'</select></div></div>'+
+    '<div id="ttBox">'+ttHTML()+'</div>';
+}
+
+/* Find a space (modules 2 and 3) */
+function resultsHTML(){
+  var f=st.find,s=toMin(f.from),e=toMin(f.to);
+  if(!f.date||!(e>s))return '<div class="empty">Choose a date, and a start time that is earlier than the end time.</div>';
+  var size=parseInt(f.size,10)||0;
+  var pool=sortedSpaces().filter(function(sp){return sp.active&&(!f.block||sp.building===f.block)&&(!f.type||sp.type===f.type)});
+  var small=pool.filter(function(sp){return sp.capacity<size}).length;
+  var list=pool.filter(function(sp){return sp.capacity>=size});
+  var ok=[],no=[];
+  list.forEach(function(sp){var r=check(sp,f.date,s,e);(r.ok?ok:no).push({sp:sp,r:r})});
+  ok.sort(function(a,b){return a.sp.capacity-b.sp.capacity});
+  var head='<p class="sub" style="margin:4px 0 12px"><b>'+ok.length+'</b> of '+list.length+' spaces are free on '+esc(pretty(f.date))+', '+esc(f.from)+'–'+esc(f.to)+(size?' for '+size+' people':'')+(small?'. '+small+' were left out because they seat fewer.':'.')+(dow(f.date)===0||dow(f.date)===6?' No classes run on weekends.':'')+'</p>';
+  var cards=ok.length?'<div class="grid wide">'+ok.map(function(x,i){
+    var sp=x.sp,g=freeGaps(sp,f.date).find(function(q){return q[0]<=s&&q[1]>=e});
+    return '<article class="card res"><header><span class="code">'+esc(sp.code)+'</span>'+(size&&i===0?'<span class="pill info">Best fit</span>':'<span class="pill free">Free</span>')+'</header>'+
+      '<div class="row"><span>'+esc(sp.type)+'</span><span>'+esc(blockName(sp.building))+', floor '+sp.floor+'</span></div>'+
+      '<div class="row"><span><b style="color:var(--fg)">'+sp.capacity+'</b> seats'+(size?' · '+(sp.capacity-size)+' spare':'')+'</span>'+(g?'<span>Free window '+fmt(g[0])+'–'+fmt(g[1])+'</span>':'')+'</div>'+
+      '<p class="fac" style="display:flex;flex-wrap:wrap;gap:5px">'+sp.facilities.slice(0,4).map(function(x){return '<span class="tag">'+esc(x)+'</span>'}).join('')+'</p>'+
+      '<footer><button class="btn sm ghost" data-act="detail" data-id="'+sp.id+'">Details</button><button class="btn sm" data-act="request" data-id="'+sp.id+'">Request</button></footer></article>';
+  }).join('')+'</div>':'<div class="empty">No space is free for this time. Try another period, a different block, or a smaller group.</div>';
+  var na=no.length?'<details class="na"><summary>'+no.length+' not available</summary><ul>'+no.map(function(x){return '<li><b class="mono">'+esc(x.sp.code)+'</b><span>'+esc(x.r.reason)+'</span></li>'}).join('')+'</ul></details>':'';
+  return head+cards+na;
+}
+function renderFind(){
+  var f=st.find;
+  return '<div class="pagehead"><span class="tagline">Booking module</span><h1>Find a space</h1><p>SPATIA checks class timetables, approved bookings, pending requests and maintenance, then lists free spaces with the closest fit first.</p></div>'+
+  '<div class="card filters">'+
+    '<div><label for="fDate">Date</label><input id="fDate" type="date" min="'+todayISO()+'" data-m="find.date" data-r="results" value="'+esc(f.date)+'"></div>'+
+    '<div><label for="fPeriod">Class period</label><select id="fPeriod">'+periodOptions(periodOf(f.from,f.to))+'</select></div>'+
+    '<div><label for="fFrom">From</label><input id="fFrom" type="time" step="300" data-m="find.from" data-r="results" value="'+esc(f.from)+'"></div>'+
+    '<div><label for="fTo">To</label><input id="fTo" type="time" step="300" data-m="find.to" data-r="results" value="'+esc(f.to)+'"></div>'+
+    '<div><label for="fBlockF">Block</label><select id="fBlockF" data-m="find.block" data-r="results">'+opts(blocks.map(function(b){return {v:b.id,l:b.name}}),f.block,'All blocks')+'</select></div>'+
+    '<div><label for="fTypeF">Type</label><select id="fTypeF" data-m="find.type" data-r="results">'+opts(TYPES,f.type,'All types')+'</select></div>'+
+    '<div><label for="fSize">Group size</label><input id="fSize" type="number" min="1" max="500" placeholder="Any" data-m="find.size" data-r="results" value="'+esc(f.size)+'"></div>'+
+  '</div><div id="results">'+resultsHTML()+'</div>';
+}
+function openRequest(id){
+  var sp=spaceById(id);if(!sp)return;var f=st.find;
+  var date=f.date<todayISO()?todayISO():f.date;
+  openModal('<form class="form" id="reqForm" data-id="'+sp.id+'"><h2>Request '+esc(sp.code)+'</h2><p class="sub">'+esc(sp.type)+' · '+esc(blockName(sp.building))+' · '+sp.capacity+' seats</p>'+
+    '<div class="pair"><div><label for="rDate">Date</label><input id="rDate" type="date" min="'+todayISO()+'" required value="'+esc(date)+'"></div><div><label for="rFrom">From</label><input id="rFrom" type="time" step="300" required value="'+esc(f.from)+'"></div><div><label for="rTo">To</label><input id="rTo" type="time" step="300" required value="'+esc(f.to)+'"></div></div>'+
+    '<div><label for="rPurpose">Purpose</label><input id="rPurpose" required maxlength="80" placeholder="Project review, club meeting, extra class"></div>'+
+    '<div class="pair"><div><label for="rBy">Your name</label><input id="rBy" required maxlength="40" value="'+esc(profile.name)+'"></div><div><label for="rRoll">Roll number</label><input id="rRoll" maxlength="20" value="'+esc(profile.roll)+'"></div><div><label for="rAtt">People</label><input id="rAtt" type="number" min="1" max="'+sp.capacity+'" required value="'+esc(f.size||'')+'"></div></div>'+
+    '<p class="err" id="formErr" role="alert"></p>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button class="btn" type="submit">Send request</button></div></form>');
+}
+
+/* My requests (module 3) */
+function requestListHTML(){
+  var tab=st.rq.tab;
+  var l=bookings.slice().sort(function(a,b){return b.created.localeCompare(a.created)}).filter(function(b){return tab==='All'||b.status===tab});
+  if(!l.length)return '<div class="empty">'+(tab==='All'?'No requests yet. Find a space and send your first request.':'No '+tab.toLowerCase()+' requests.')+'</div>';
+  return '<div class="grid wide">'+l.map(function(b){
+    var sp=spaceById(b.spaceId);
+    var live=b.status==='Pending'||b.status==='Approved';
+    return '<article class="card item"><header><div><span class="code">'+esc(sp?sp.code:'Removed space')+'</span><p class="sub">'+esc(sp?sp.type+' · '+blockName(sp.building):'')+'</p></div>'+statusPill(b.status)+'</header>'+
+      '<p><b>'+esc(b.purpose)+'</b></p>'+
+      '<div class="row"><span>'+esc(pretty(b.date))+'</span><span class="mono">'+esc(b.from)+'–'+esc(b.to)+'</span><span>'+b.attendees+' people</span></div>'+
+      '<div class="row"><span>Requested by '+esc(b.by)+(b.roll?' ('+esc(b.roll)+')':'')+'</span><span>Sent '+esc(fmtWhen(b.created))+'</span>'+(b.decided?'<span>'+esc(b.status)+' '+esc(fmtWhen(b.decided))+'</span>':'')+'</div>'+
+      '<div class="acts">'+(live?'<button class="btn sm ghost danger" data-act="bk-cancel" data-id="'+b.id+'">Cancel request</button>':'')+
+      (isAdmin()&&b.status==='Pending'?'<button class="btn sm" data-act="bk-approve" data-id="'+b.id+'">Approve</button><button class="btn sm ghost" data-act="bk-reject" data-id="'+b.id+'">Reject</button>':'')+'</div></article>';
+  }).join('')+'</div>';
+}
+function renderRequests(){
+  var tabs=['All','Pending','Approved','Rejected','Cancelled'];
+  return '<div class="pagehead"><span class="tagline">Booking module</span><h1>My requests</h1><p>Track every room request. Pending requests hold their slot until an admin approves or rejects them.</p></div>'+
+    '<div class="tabs" role="group" aria-label="Filter by status">'+tabs.map(function(t){var n=t==='All'?bookings.length:bookings.filter(function(b){return b.status===t}).length;return '<button type="button" data-act="rq-tab" data-id="'+t+'" aria-pressed="'+(st.rq.tab===t)+'">'+t+' · '+n+'</button>'}).join('')+'</div>'+
+    '<div id="rqList">'+requestListHTML()+'</div>';
+}
+
+/* Maintenance (module 4) */
+function issueListHTML(){
+  var show=st.mt.show;
+  var l=issues.slice().sort(function(a,b){return b.reported.localeCompare(a.reported)}).filter(function(i){return show==='All'||(show==='Open'?i.status!=='Resolved':i.status==='Resolved')});
+  if(!l.length)return '<div class="empty">'+(show==='Open'?'No open issues. Every reported problem has been resolved.':'Nothing to show here.')+'</div>';
+  var order=['Reported','In progress','Resolved'];
+  return '<div class="stack">'+l.map(function(i){
+    var sp=spaceById(i.spaceId),idx=order.indexOf(i.status);
+    return '<article class="card item"><header><div><span class="code">'+esc(sp?sp.code:'Removed space')+'</span><p class="sub">'+esc(i.cat)+' · reported '+esc(pretty(i.reported))+'</p></div><span class="pill '+({Low:'mute',Medium:'warn',High:'bad'}[i.sev])+'">'+esc(i.sev)+'</span></header>'+
+      '<p>'+esc(i.desc)+'</p>'+
+      (i.sev==='High'&&i.status!=='Resolved'?'<p class="sub">This space is hidden from search until the issue is resolved.</p>':'')+
+      '<ol class="steps">'+order.map(function(o,n){return '<li class="'+(n<idx||(n===idx&&idx===2)?'done':n===idx?'cur':'')+'">'+o+'</li>'}).join('')+'</ol>'+
+      (isAdmin()&&i.status!=='Resolved'?'<div class="acts"><button class="btn sm" data-act="is-next" data-id="'+i.id+'">'+(i.status==='Reported'?'Start work':'Mark resolved')+'</button></div>':'')+'</article>';
+  }).join('')+'</div>';
+}
+function renderMaintenance(){
+  var tabs=['Open','Resolved','All'];
+  return '<div class="pagehead"><span class="tagline">Maintenance module</span><h1>Maintenance</h1><p>Report a problem in a room and follow it until it is fixed.</p></div>'+
+  '<div class="two"><form class="card formcard form" id="issueForm"><h2>Report an issue</h2>'+
+    '<div><label for="iSpace">Space</label><select id="iSpace">'+spaceOptions('')+'</select></div>'+
+    '<div class="pair"><div><label for="iCat">Category</label><select id="iCat">'+opts(CATS,'')+'</select></div><div><label for="iSev">Severity</label><select id="iSev">'+opts(['Low','Medium','High'],'Medium')+'</select></div></div>'+
+    '<div><label for="iDesc">What is wrong?</label><textarea id="iDesc" required maxlength="200" placeholder="Describe the problem and where in the room it is"></textarea></div>'+
+    '<p class="sub">High severity takes the room out of search until it is resolved.</p><p class="err" id="formErr" role="alert"></p>'+
+    '<button class="btn" type="submit">Report issue</button></form>'+
+  '<div><div class="tabs" role="group" aria-label="Filter issues">'+tabs.map(function(t){return '<button type="button" data-act="mt-tab" data-id="'+t+'" aria-pressed="'+(st.mt.show===t)+'">'+t+'</button>'}).join('')+'</div><div id="issueList">'+issueListHTML()+'</div></div></div>';
+}
+
+/* Dashboard (module 4) */
+function renderDashboard(){
+  var rs=refSlot(),p=PERIODS[rs.k-1],tch=teaching(),wd=weekDates();
+  var active=spaces.filter(function(s){return s.active});
+  var free=active.filter(function(s){return check(s,rs.date,p[0],p[1]).ok}).length;
+  var avg=tch.length?tch.reduce(function(a,s){return a+util(s)},0)/tch.length:0;
+  var openI=issues.filter(function(i){return i.status!=='Resolved'}).length,pend=bookings.filter(function(b){return b.status==='Pending'}).length;
+  var occs=tch.map(function(s){return wd.map(function(d){return occ(s,d)})});
+  var heat=wd.map(function(d,di){return PERIODS.map(function(_,k){return tch.length?occs.filter(function(o){return o[di][k+1]}).length/tch.length:0})});
+  var peak={v:-1},quiet={v:2};
+  heat.forEach(function(row,di){row.forEach(function(v,k){if(v>peak.v)peak={v:v,d:di,k:k};if(v<quiet.v)quiet={v:v,d:di,k:k}})});
+  function bars(rows){return rows.map(function(r){var pc=Math.round(r[1]*100);return '<div class="bar"><span>'+esc(r[0])+'</span><span class="bt"><i style="width:'+pc+'%"></i></span><span class="bv">'+pc+'%</span></div>'}).join('')}
+  var byBlock=blocks.map(function(b){var l=tch.filter(function(s){return s.building===b.id});return l.length?[b.name,l.reduce(function(a,s){return a+util(s)},0)/l.length]:null}).filter(Boolean);
+  var byType=['Classroom','Lab','Seminar Hall'].map(function(t){var l=tch.filter(function(s){return s.type===t});return l.length?[t+'s',l.reduce(function(a,s){return a+util(s)},0)/l.length]:null}).filter(Boolean);
+  var ranked=tch.map(function(s){return {s:s,u:util(s)}}).sort(function(a,b){return a.u-b.u});
+  var low=ranked.slice(0,5),high=ranked.slice(-5).reverse();
+  function tbl(l){return '<table class="plain"><thead><tr><th>Room</th><th>Type</th><th>Seats</th><th>Use</th></tr></thead><tbody>'+l.map(function(x){return '<tr><td class="mono">'+esc(x.s.code)+'</td><td>'+esc(x.s.type)+'</td><td>'+x.s.capacity+'</td><td>'+Math.round(x.u*100)+'%</td></tr>'}).join('')+'</tbody></table>'}
+  var heatHTML='<div class="heat"><div class="h"></div>'+wd.map(function(d){return '<div class="h">'+DAYS[dow(d)]+'</div>'}).join('');
+  for(var k=0;k<8;k++){heatHTML+='<div class="p">P'+(k+1)+'</div>';for(var di=0;di<5;di++){var v=heat[di][k],pc=Math.round(v*100);heatHTML+='<div style="background:color-mix(in srgb,var(--accent) '+pc+'%,var(--surface-2));color:'+(pc>50?'var(--accent-fg)':'var(--fg)')+'">'+pc+'</div>'}}
+  heatHTML+='</div>';
+  var cats={};issues.forEach(function(i){cats[i.cat]=(cats[i.cat]||0)+1});
+  var catRows=Object.keys(cats).sort(function(a,b){return cats[b]-cats[a]}).slice(0,5);
+  var stCount=function(s){return issues.filter(function(i){return i.status===s}).length};
+  return '<div class="pagehead"><span class="tagline">Maintenance module</span><h1>Dashboard</h1><p>Availability, utilization and repair status for the week of '+esc(pretty(wd[0]))+'.</p></div>'+
+  '<div class="kpis">'+
+    '<div class="card kpi"><b>'+free+' / '+active.length+'</b><span>Free in Period '+rs.k+' · '+esc(pretty(rs.date))+' '+fmt(p[0])+(rs.live?' (now)':' (next)')+'</span></div>'+
+    '<div class="card kpi"><b>'+Math.round(avg*100)+'%</b><span>Weekly use of teaching spaces</span></div>'+
+    '<a class="card kpi" href="#requests"><b>'+pend+'</b><span>Requests waiting</span></a>'+
+    '<a class="card kpi" href="#maintenance"><b>'+openI+'</b><span>Open issues</span></a></div>'+
+  '<h2 class="sec-title">Utilization</h2><div class="panels">'+
+    '<section class="card panel"><h3>Use by block</h3>'+bars(byBlock)+'<p class="sub">Share of the 40 weekly periods that carry a class or approved booking.</p></section>'+
+    '<section class="card panel"><h3>Use by space type</h3>'+bars(byType)+'</section>'+
+    '<section class="card panel" style="grid-column:1/-1"><h3>Campus occupancy by period (%)</h3><div style="overflow-x:auto">'+heatHTML+'</div><p class="sub">Busiest slot: '+DAYS[dow(wd[peak.d])]+' Period '+(peak.k+1)+' at '+Math.round(peak.v*100)+'%. Quietest slot: '+DAYS[dow(wd[quiet.d])]+' Period '+(quiet.k+1)+' at '+Math.round(quiet.v*100)+'%.</p></section>'+
+  '</div><h2 class="sec-title">Reports</h2><div class="panels">'+
+    '<section class="card panel"><h3>Least used teaching rooms</h3><div style="overflow-x:auto">'+tbl(low)+'</div><p class="sub">Rooms with the most idle periods are the first to consider for extra batches.</p></section>'+
+    '<section class="card panel"><h3>Most used teaching rooms</h3><div style="overflow-x:auto">'+tbl(high)+'</div></section>'+
+    '<section class="card panel"><h3>Maintenance summary</h3><table class="plain"><tbody><tr><td>Reported</td><td>'+stCount('Reported')+'</td></tr><tr><td>In progress</td><td>'+stCount('In progress')+'</td></tr><tr><td>Resolved</td><td>'+stCount('Resolved')+'</td></tr></tbody></table>'+(catRows.length?'<h3 style="margin-top:6px">Most reported</h3><table class="plain"><tbody>'+catRows.map(function(c){return '<tr><td>'+esc(c)+'</td><td>'+cats[c]+'</td></tr>'}).join('')+'</tbody></table>':'')+'</section>'+
+  '</div>';
+}
+
+/* ---------- router ---------- */
+var ROUTES={home:renderHome,spaces:renderSpaces,timetable:renderTimetable,find:renderFind,requests:renderRequests,maintenance:renderMaintenance,dashboard:renderDashboard};
+var NAV=[['home','Home'],['spaces','Spaces'],['timetable','Timetable'],['find','Find a space'],['requests','My requests'],['maintenance','Maintenance'],['dashboard','Dashboard']];
+var cur='home';
+function buildNav(){$('#nav').innerHTML=NAV.map(function(n){return '<a href="#'+n[0]+'"'+(n[0]===cur?' aria-current="page"':'')+'>'+n[1]+'</a>'}).join('')}
+function route(scroll){
+  var h=(location.hash||'#home').slice(1);cur=ROUTES[h]?h:'home';
+  $('#view').innerHTML=ROUTES[cur]();buildNav();
+  if(scroll!==false)window.scrollTo(0,0);
+  var a=$('#nav [aria-current="page"]');if(a&&a.scrollIntoView)try{a.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}
+}
+function rerender(){var y=window.scrollY;route(false);window.scrollTo(0,y)}
+window.addEventListener('hashchange',function(){route(true)});
+
+var PART={
+  spaces:function(){$('#spList').innerHTML=spaceListHTML();$('#blkStrip').innerHTML=blocksHTML()},
+  results:function(){$('#results').innerHTML=resultsHTML()},
+  tt:function(){$('#ttBox').innerHTML=ttHTML()}
+};
+
+/* ---------- input handling ---------- */
+function onInput(e){
+  var t=e.target;
+  if(t.id==='fPeriod'){
+    if(t.value){var p=PERIODS[+t.value-1];st.find.from=fmt(p[0]);st.find.to=fmt(p[1]);$('#fFrom').value=st.find.from;$('#fTo').value=st.find.to;PART.results()}
+    return;
+  }
+  var m=t.dataset&&t.dataset.m;if(!m)return;
+  var a=m.split('.');st[a[0]][a[1]]=t.value;
+  if(m==='tt.space')st.tt.sel=null;
+  if(m==='find.from'||m==='find.to'){var pp=$('#fPeriod');if(pp)pp.value=String(periodOf(st.find.from,st.find.to))}
+  var r=t.dataset.r;if(r&&PART[r])PART[r]();
+}
+document.addEventListener('input',onInput);
+document.addEventListener('change',onInput);
+
+/* ---------- actions ---------- */
+var ACT={
+  'close-modal':function(){closeModal()},
+  'detail':function(t){openDetail(t.dataset.id)},
+  'request':function(t){openRequest(t.dataset.id)},
+  'to-tt':function(t){st.tt.space=t.dataset.id;st.tt.sel=null;closeModal()},
+  'add-space':function(){openModal(spaceFormHTML())},
+  'edit-space':function(t){openModal(spaceFormHTML(spaceById(t.dataset.id)))},
+  'del-space':function(t){
+    if(!t.dataset.armed){t.dataset.armed='1';t.textContent='Confirm delete';setTimeout(function(){if(t.isConnected){delete t.dataset.armed;t.textContent='Delete'}},3500);return}
+    var id=t.dataset.id;spaces=spaces.filter(function(s){return s.id!==id});bookings=bookings.filter(function(b){return b.spaceId!==id});issues=issues.filter(function(i){return i.spaceId!==id});
+    Object.keys(ttOver).forEach(function(k){if(k.indexOf(id+'|')===0)delete ttOver[k]});sv();toast('Space deleted.');rerender();
+  },
+  'add-block':function(){openModal('<form class="form" id="blockForm"><h2>Add a block</h2><div class="pair"><div><label for="bId">Short code</label><input id="bId" required maxlength="3" placeholder="D"></div><div><label for="bFloors">Floors</label><input id="bFloors" type="number" min="1" max="20" required value="3"></div></div><div><label for="bName">Block name</label><input id="bName" required maxlength="40" placeholder="Block D"></div><div><label for="bNote">Description</label><input id="bNote" maxlength="60" placeholder="Optional"></div><p class="err" id="formErr" role="alert"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn ghost" data-act="close-modal">Cancel</button><button class="btn" type="submit">Add block</button></div></form>')},
+  'del-block':function(t){blocks=blocks.filter(function(b){return b.id!==t.dataset.id});if(st.sp.block===t.dataset.id)st.sp.block='';sv();rerender();toast('Block removed.')},
+  'filter-block':function(t){st.sp.block=st.sp.block===t.dataset.id?'':t.dataset.id;rerender()},
+  'tt-cell':function(t){st.tt.sel={d:+t.dataset.d,k:+t.dataset.k};PART.tt();var i=$('#ttText');if(i)i.focus()},
+  'tt-clear':function(){var s=st.tt.sel;if(!s)return;ttOver[st.tt.space+'|'+s.d+'|'+s.k]=null;sv();PART.tt();toast('Period cleared.')},
+  'tt-close':function(){st.tt.sel=null;PART.tt()},
+  'rq-tab':function(t){st.rq.tab=t.dataset.id;rerender()},
+  'mt-tab':function(t){st.mt.show=t.dataset.id;rerender()},
+  'bk-cancel':function(t){var b=bookings.find(function(x){return x.id===t.dataset.id});if(!b)return;b.status='Cancelled';b.decided=new Date().toISOString();sv();rerender();toast('Request cancelled. The slot is free again.')},
+  'bk-approve':function(t){
+    var b=bookings.find(function(x){return x.id===t.dataset.id}),sp=b&&spaceById(b.spaceId);if(!b||!sp)return;
+    var r=check(sp,b.date,toMin(b.from),toMin(b.to),b.id);
+    if(!r.ok){toast('Cannot approve. '+r.reason);return}
+    b.status='Approved';b.decided=new Date().toISOString();sv();rerender();toast('Request approved.');
+  },
+  'bk-reject':function(t){var b=bookings.find(function(x){return x.id===t.dataset.id});if(!b)return;b.status='Rejected';b.decided=new Date().toISOString();sv();rerender();toast('Request rejected.')},
+  'is-next':function(t){var i=issues.find(function(x){return x.id===t.dataset.id});if(!i)return;i.status=i.status==='Reported'?'In progress':'Resolved';sv();rerender();toast(i.status==='Resolved'?'Issue resolved.':'Work started.')},
+  'pick-photo':function(){$('#photoIn').click()},
+  'pick-logo':function(){$('#logoIn').click()},
+  'reset-brand':function(){store.del('photo');store.del('logo');applyBrand();toast('Branding reset.')}
+};
+document.addEventListener('click',function(e){
+  if(e.target.id==='modal'){closeModal();return}
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var fn=ACT[t.dataset.act];if(fn)fn(t,e);
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#modal').hidden)closeModal()});
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-role]');if(!b)return;
+  role=b.dataset.role;store.set('role',role);syncRole();rerender();
+});
+function syncRole(){document.querySelectorAll('[data-role]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.role===role))})}
+
+/* ---------- forms ---------- */
+function setErr(m){var e=$('#formErr');if(e)e.textContent=m}
+var FORMS={
+  quickForm:function(){
+    var f=st.find;f.date=$('#qDate').value;f.from=$('#qFrom').value;f.to=$('#qTo').value;f.size=$('#qSize').value;
+    location.hash='#find';
+  },
+  spaceForm:function(form){
+    var id=form.dataset.id,code=$('#fCode').value.trim().toUpperCase(),cap=parseInt($('#fCap').value,10),floor=parseInt($('#fFloor').value,10);
+    if(!code)return setErr('Enter a room code.');
+    if(spaces.some(function(s){return s.code===code&&s.id!==id}))return setErr('A space with code '+code+' already exists.');
+    if(!(cap>=1))return setErr('Capacity must be at least 1.');
+    var rec={code:code,building:$('#fBlock').value,floor:isNaN(floor)?0:floor,type:$('#fTypeSel').value,capacity:cap,facilities:$('#fFac').value.split(',').map(function(x){return x.trim()}).filter(Boolean),active:$('#fActive').checked};
+    if(id){var s=spaceById(id);Object.keys(rec).forEach(function(k){s[k]=rec[k]});toast('Space updated.')}
+    else{rec.id='s'+Date.now();spaces.push(rec);toast('Space added.')}
+    sv();closeModal();rerender();
+  },
+  blockForm:function(){
+    var id=$('#bId').value.trim().toUpperCase(),name=$('#bName').value.trim();
+    if(!id||!name)return setErr('Enter a code and a name.');
+    if(blocks.some(function(b){return b.id===id}))return setErr('Code '+id+' is already used.');
+    blocks.push({id:id,name:name,note:$('#bNote').value.trim(),floors:parseInt($('#bFloors').value,10)||1});
+    sv();closeModal();rerender();toast('Block added.');
+  },
+  ttForm:function(){
+    var s=st.tt.sel,v=$('#ttText').value.trim();if(!s)return;
+    ttOver[st.tt.space+'|'+s.d+'|'+s.k]=v||null;sv();PART.tt();toast(v?'Class saved.':'Period cleared.');
+  },
+  reqForm:function(form){
+    var sp=spaceById(form.dataset.id);if(!sp)return;
+    var date=$('#rDate').value,from=$('#rFrom').value,to=$('#rTo').value,s=toMin(from),e=toMin(to),att=parseInt($('#rAtt').value,10);
+    var purpose=$('#rPurpose').value.trim(),by=$('#rBy').value.trim();
+    if(!date||date<todayISO())return setErr('Pick today or a later date.');
+    if(!(e>s))return setErr('The start time must be earlier than the end time.');
+    if(!purpose||!by)return setErr('Fill in the purpose and your name.');
+    if(!(att>=1)||att>sp.capacity)return setErr('This space seats '+sp.capacity+'. Enter a number of people up to that.');
+    var r=check(sp,date,s,e);if(!r.ok)return setErr('Not available. '+r.reason);
+    profile={name:by,roll:$('#rRoll').value.trim()};store.set('profile',profile);
+    bookings.push({id:'b'+Date.now(),spaceId:sp.id,date:date,from:from,to:to,purpose:purpose,by:by,roll:profile.roll,attendees:att,status:'Pending',created:new Date().toISOString()});
+    sv();closeModal();toast('Request sent. It is pending review.');
+    if(cur==='requests')rerender();else location.hash='#requests';
+  },
+  issueForm:function(){
+    var d=$('#iDesc').value.trim();if(!d)return setErr('Describe the problem.');
+    var sev=$('#iSev').value;
+    issues.push({id:'i'+Date.now(),spaceId:$('#iSpace').value,cat:$('#iCat').value,sev:sev,desc:d,status:'Reported',reported:todayISO(),by:isAdmin()?'Admin':'Student'});
+    sv();st.mt.show='Open';rerender();toast(sev==='High'?'Issue reported. The space is hidden from search until it is resolved.':'Issue reported.');
+  }
+};
+document.addEventListener('submit',function(e){e.preventDefault();var f=FORMS[e.target.id];if(f)f(e.target)});
+
+/* ---------- start ---------- */
+applyBrand();syncRole();route(false);
+})();
+</script>
+
+</body></html>
